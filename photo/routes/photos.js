@@ -36,7 +36,6 @@ exports.submit = function (dir) {
   return function(req, res, next){
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files){
-      console.log(fields);
       var img = files['photo[image]'][0];
       var name = fields['photo[name]'][0] || img.originalFilename;
       var path = join(dir, img.originalFilename);
