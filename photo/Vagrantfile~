@@ -1,0 +1,44 @@
+
+#Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
+  # Every Vagrant virtual environment requires a box to build off of.
+  #config.vm.box = "precise32"
+  #config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+
+  config.vm.box = "amazin/dev-1"
+  config.vm.hostname= "testserver"
+
+  #config.vm.provider "virtualbox" do |v|
+  #  v.name = "myBox"
+  #end
+  #config.vm.synced_folder "./../", "/project/"
+
+  #config.vm.network :private_network, ip: "192.168.33.10"
+  config.vm.network "forwarded_port", guest: 27017, host: 27017
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
+
+  config.vm.synced_folder "../", "/media", type:"rsync"
+
+  #config.vm.provision :shell, :path => "setup/bootstrap.sh"
+  #config.vm.provision "puppet" do |puppet|
+  #    puppet.manifests_path = "./setup"
+  #    puppet.manifest_file = "manifest.pp"
+  #end
+
+  config.vm.define "first", primary: true do |first|
+        config.vm.provision "puppet" do |puppet|
+            puppet.manifests_path = "./vm_setup"
+            puppet.manifest_file = "manifest.pp"
+        end
+  end
+
+  config.vm.define "second" do |second|
+        config.vm.provision "puppet" do |puppet|
+            puppet.manifests_path = "./vm_setup"
+            puppet.manifest_file = "manifest-second.pp"
+        end
+        #config.vm.synced_folder "../../project/", "/project", type: "rsync"
+        #config.vm.network "forwarded_port", guest: 3000, host: 3000
+  end
+
+end

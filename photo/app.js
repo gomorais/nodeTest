@@ -1,0 +1,57 @@
+
+/**
+ * Module dependencies.
+ */
+
+var express = require('express');
+
+//var user = require('./routes/user');
+//var photos = require('./routes/photos');
+var http = require('http');
+var path = require('path');
+
+var local = "127.0.0.1";
+var inTest = "0.0.0.0";
+
+var app = express();
+
+// all environments
+app.configure(function(){
+	app.set('port', process.env.PORT || 3000);
+	app.set('views', __dirname + '/views');
+	app.set('view engine', 'ejs');
+	app.set('photos', __dirname + '/public/photos');
+	app.use(express.favicon());
+	app.use(express.logger('dev'));
+	app.use(express.json());
+	app.use(express.urlencoded());
+	//app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(app.router);
+	app.use(express.static(path.join(__dirname, 'public')));
+});
+
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+
+/*app.get('/', photos.list);
+app.get('/users', user.list);
+app.get('/upload', photos.form);
+app.post('/upload', photos.submit(app.get('photos')));
+app.get('/photo/:id/download', photos.download(app.get('photos')));*/
+
+
+var env = process.env.NODE_ENV
+if ('test' == env) {
+	http.createServer(app).listen(app.get('port'), inTest, function(){
+  		console.log('Express server listening on port ' + app.get('port'));
+	});
+}else {
+	http.createServer(app).listen(app.get('port'), local, function(){
+  		console.log('Express server listening on port ' + app.get('port'));
+	});
+}
+
+var routes = require('./routes/routes.js')(app);
