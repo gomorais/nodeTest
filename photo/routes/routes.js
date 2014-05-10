@@ -14,7 +14,9 @@ module.exports = function (app) {
     app.get('/', photos.list);
     app.get('/users', user.list);
     app.get('/upload', photos.form);
+    app.get('/photos/', photos.getPhotos);
     app.post('/upload', photos.submit(app.get('photos')));
     app.get('/photo/:id/download', photos.download(app.get('photos')));
+    app.del('/photo/:id/delete', photos.deletePhoto);
 
 };

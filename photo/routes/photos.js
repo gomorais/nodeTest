@@ -84,3 +84,28 @@ exports.download = function(dir){
 	});
     };
 };  
+
+exports.getPhotos = function(req, res){
+    Photo.find("",function (err, photos){
+	if (err) return console.log(err);
+	res.send(photos);
+    });
+};
+
+exports.deletePhoto = function(req, res){
+	var id = req.params.id;
+	Photo.findById(id, function(err, photo){
+	    if (err) return next(err);
+	    if (photo == null) {
+		return res.send(400, {"error":"Photo not found"});
+	    }
+	    photo.remove(function(err){
+		if(!err){
+		    console.log("removed");
+		    res.send("removed");
+		} else return console.log(err);
+	    });	
+	    
+	});
+}; 
+
